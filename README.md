@@ -16,7 +16,7 @@ This python package enables easy plotting of CpG data.
 The package is not yet uploaded to PyPi so you must clone/download the repo first
 1. Git clone or download and unzip the repo
 2. Activate your virtualenv (Optional)
-3. Navigate to the directory
+3. Navigate to the directory containing the `setup.py` file
 4. Execute `pip install .` (note the period at the end)
 
 ## Usage
