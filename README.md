@@ -27,3 +27,6 @@ plotter = CpgMatrixPlotter()
 plotter.plotCpgMatrix(data, locations)
 
 ```
+
+## Credits
+Code created by Jack Duryea was used as a starting point to create this package
