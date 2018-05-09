@@ -3,6 +3,7 @@ package to plot CpG matrix data as circles spaces proportionally apart
 
 ## Plot example
 
+![Plot example](cpgPlotter/examples/pcdh_region_chr18_37449400.png)
 
 This python package enables easy plotting of CpG data.
 
