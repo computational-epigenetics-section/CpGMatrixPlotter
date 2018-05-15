@@ -31,7 +31,10 @@ class CpGMatrixPlotter:
         cluster_labels = clustered_data_frame['class']
         input_labels = clustered_data_frame['input']
 
-        working_df = clustered_data_frame.drop(['class', 'input'], axis=1)
+        clustered_data_frame['meth_mean'] = clustered_data_frame.drop(['input', 'class'], axis=1).mean(axis=1)
+        clustered_data_frame = clustered_data_frame.sort_values(['meth_mean', 'class'], ascending=False)
+
+        working_df = clustered_data_frame.drop(['class', 'input', 'meth_mean'], axis=1)
 
         cpgMatrix = np.array(working_df)
         cpgPositions = np.array([int(x) for x in working_df.columns])
@@ -85,7 +88,7 @@ class CpGMatrixPlotter:
 
         return fig
 
-    def plotCpGReadDataFrame(self, clustered_data_frame, title=None, figsize=(8, 8)):
+    def plotCpGReadDataFrame(self, clustered_data_frame, title=None, figsize=(8, 8), sort=True):
         """
         Wrapper method to combine prepping a clustered data frame and plotting the matrix
         :param clustered_data_frame: #todo describe this
@@ -94,4 +97,4 @@ class CpGMatrixPlotter:
         """
         prepped_data = self.prep_clustered_data_frame(clustered_data_frame)
 
-        return self.plotCpGMatrix(prepped_data[0], prepped_data[1], title=title, figsize=figsize)
+        return self.plotCpGMatrix(prepped_data[0], prepped_data[1], title=title, figsize=figsize, sort=sort)
