@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name="cpgPlotter",
-      version="0.1.0",
+      version="0.1.1",
       description="Package to plot cpg data",
       author="Anthony Scott, PhD",
       author_email="charles.scott@bcm.edu",

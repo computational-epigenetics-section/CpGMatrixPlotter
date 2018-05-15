@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
 class CpGMatrixPlotter:
@@ -47,7 +48,16 @@ class CpGMatrixPlotter:
         else:
             NotImplementedError("I cannot yet accept unknown values. But I will soon.")
 
-    def plotCpGMatrix(self, cpgMatrix, cpgPositions, title=None, figsize=(8, 8)):
+    @staticmethod
+    def sort_matrix_by_methylation(cpgMatrix):
+        df = pd.DataFrame(cpgMatrix)
+        df['mean'] = df.apply(np.mean, axis=1)
+        df = df.sort_values(['mean'], ascending=False)
+
+        return np.array(df.drop(['mean'], axis=1))
+
+
+    def plotCpGMatrix(self, cpgMatrix, cpgPositions, title=None, figsize=(8, 8), sort=False):
         fig, ax = plt.subplots(figsize=figsize)
         v_steps = 1 / cpgMatrix.shape[0]
         v_spacings = np.arange(0, 1, v_steps)
@@ -61,6 +71,9 @@ class CpGMatrixPlotter:
             ax.set_title(title)
         radius = min(v_steps / 2.5, 0.05)
         h_spacings = self.buffer_spacings(h_spacings, radius * 2)
+
+        if sort:
+            cpgMatrix = self.sort_matrix_by_methylation(cpgMatrix)
 
         for read, vspace in zip(cpgMatrix, v_spacings):
             ax.axhline(vspace, color="black", zorder=1)
