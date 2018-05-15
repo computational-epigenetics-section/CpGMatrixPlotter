@@ -52,7 +52,7 @@ class CpGMatrixPlotter:
     def sort_matrix_by_methylation(cpgMatrix):
         df = pd.DataFrame(cpgMatrix)
         df['mean'] = df.apply(np.mean, axis=1)
-        df = df.sort_values(['mean'], ascending=False)
+        df = df.sort_values(['mean'], ascending=True)
 
         return np.array(df.drop(['mean'], axis=1))
 
