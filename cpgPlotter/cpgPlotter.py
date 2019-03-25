@@ -84,10 +84,11 @@ class CpGMatrixPlotter:
         :return: matplotlib axes
         """
         fig, ax = plt.subplots(figsize=figsize)
+        ax.axis("equal")
         v_steps = 1 / cpgMatrix.shape[0]
         v_spacings = np.arange(0, 1, v_steps)
         h_spacings = (cpgPositions - min(cpgPositions)) * 0.01
-        ax.set_ylim(-.02, 1.02)
+        ax.set_ylim(-.05, 1.05)
         ax.set_xlim(-.02, max(h_spacings) + 0.02)
         ax.set_xticks(h_spacings)
         ax.set_xticklabels(cpgPositions, rotation=90)
@@ -105,9 +106,11 @@ class CpGMatrixPlotter:
             for cpg, hspace in zip(read, h_spacings):
                 x = hspace
                 y = vspace
-                circle = plt.Circle((x, y), radius=radius, facecolor=self._get_color(cpg), edgecolor="black")
-                ax.add_artist(circle)
-
+                # only plot if a known value is provided
+                if cpg == 1 or cpg==0:
+                    circle = plt.Circle((x, y), radius=radius, facecolor=self._get_color(cpg), edgecolor="black")
+                    ax.add_artist(circle)
+#         ax.axis("equal")
         return ax
 
     def plotCpGReadDataFrame(self, clustered_data_frame, title=None, figsize=(8, 8), sort=True):
