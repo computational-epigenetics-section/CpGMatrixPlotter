@@ -6,20 +6,18 @@ import pandas as pd
 class CpGMatrixPlotter:
     """
     Main class used to plot CpG matrix data
-
     Example:
     >>>from cpgPlotter import CpgMatrixPlotter
     >>>import numpy as np
     >>>data = np.array([[1,1,1,0],
     >>>                 [1,1,0,0]])
     >>>locations = np.array([100, 110, 155, 190])
-
     >>>plotter = CpgMatrixPlotter()
     >>>plotter.plotCpgMatrix(data, locations)
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, highlight_color="limegreen"):
+        self.highlight_color = highlight_color
 
     @staticmethod
     def _buffer_spacings(spacings, radius):
@@ -71,11 +69,16 @@ class CpGMatrixPlotter:
         df = df.sort_values(['mean'], ascending=True)
 
         return np.array(df.drop(['mean'], axis=1))
+    
+    def _get_highlight_color(self, cpg_highlight: int):
+        if cpg_highlight == 1:
+            return self.highlight_color
+        else:
+            return "black"
 
-    def plotCpGMatrix(self, cpgMatrix, cpgPositions, title=None, figsize=(8, 8), sort=False):
+    def plotCpGMatrix(self, cpgMatrix, cpgPositions, title=None, figsize=(6, 6), sort=False, highlights=None):
         """
         Main plotting function. Plot tanghulu plot of cpg matrix data
-
         :param cpgMatrix: np.array of CpG values. 1=methylated; 0=unmethylated
         :param cpgPositions: genomic positions of the CpGs. Used to calculate spacing
         :param title: Title to add to the plot, optional
@@ -101,6 +104,7 @@ class CpGMatrixPlotter:
         if sort:
             cpgMatrix = self._sort_matrix_by_methylation(cpgMatrix)
 
+        cpg_counter = 0
         for read, vspace in zip(cpgMatrix, v_spacings):
             ax.axhline(vspace, color="black", zorder=1)
             for cpg, hspace in zip(read, h_spacings):
@@ -108,8 +112,16 @@ class CpGMatrixPlotter:
                 y = vspace
                 # only plot if a known value is provided
                 if cpg == 1 or cpg==0:
-                    circle = plt.Circle((x, y), radius=radius, facecolor=self._get_color(cpg), edgecolor="black")
+                    if highlights is not None:
+                        circle = plt.Circle((x, y), radius=radius, facecolor=self._get_color(cpg), 
+                                            edgecolor=self._get_highlight_color(highlights[cpg_counter]), linewidth=3)
+                        cpg_counter += 1
+                    else:
+                        circle = plt.Circle((x, y), radius=radius, facecolor=self._get_color(cpg), 
+                                            edgecolor="black")
                     ax.add_artist(circle)
+                else:
+                    cpg_counter +=1
 #         ax.axis("equal")
         return ax
 
