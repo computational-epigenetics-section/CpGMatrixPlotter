@@ -16,8 +16,10 @@ class CpGMatrixPlotter:
     >>>plotter.plotCpgMatrix(data, locations)
     """
 
-    def __init__(self, highlight_color="limegreen"):
+    def __init__(self, highlight_color="limegreen", highlight_linewidth=3):
         self.highlight_color = highlight_color
+        self.highlight_linewidth = highlight_linewidth
+        self.sorted_indicies = None
 
     @staticmethod
     def _buffer_spacings(spacings, radius):
@@ -62,13 +64,18 @@ class CpGMatrixPlotter:
         else:
             NotImplementedError("I cannot yet accept unknown values. But I will soon.")
 
-    @staticmethod
-    def _sort_matrix_by_methylation(cpgMatrix):
+    def _sort_matrix_by_methylation(self, cpgMatrix):
         df = pd.DataFrame(cpgMatrix)
         df['mean'] = df.apply(np.mean, axis=1)
         df = df.sort_values(['mean'], ascending=True)
+        self.sorted_indicies = df.index
 
         return np.array(df.drop(['mean'], axis=1))
+
+    def _sort_highlights(self, highlights, shape):
+        highlights2 = highlights.reshape(shape)
+        highlights2 = highlights2[self.sorted_indicies]
+        return highlights2.ravel()
     
     def _get_highlight_color(self, cpg_highlight: int):
         if cpg_highlight == 1:
@@ -105,6 +112,8 @@ class CpGMatrixPlotter:
             cpgMatrix = self._sort_matrix_by_methylation(cpgMatrix)
 
         cpg_counter = 0
+        if sort and highlights is not None:
+            highlights = self._sort_highlights(highlights, cpgMatrix.shape)
         for read, vspace in zip(cpgMatrix, v_spacings):
             ax.axhline(vspace, color="black", zorder=1)
             for cpg, hspace in zip(read, h_spacings):
@@ -114,7 +123,8 @@ class CpGMatrixPlotter:
                 if cpg == 1 or cpg==0:
                     if highlights is not None:
                         circle = plt.Circle((x, y), radius=radius, facecolor=self._get_color(cpg), 
-                                            edgecolor=self._get_highlight_color(highlights[cpg_counter]), linewidth=3)
+                                            edgecolor=self._get_highlight_color(highlights[cpg_counter]), 
+                                            linewidth=self.highlight_linewidth)
                         cpg_counter += 1
                     else:
                         circle = plt.Circle((x, y), radius=radius, facecolor=self._get_color(cpg), 
