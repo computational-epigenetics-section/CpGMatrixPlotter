@@ -91,6 +91,8 @@ class CpGMatrixPlotter:
         :param title: Title to add to the plot, optional
         :param figsize: size of the plot to generate, default (8,8)
         :param sort: sort the reads my methylation value
+        :param highlights: a 1D array indicating whether a cpg site should be highlighted (1) or not highlighted(0).
+        Order should match that of cpgMatrix array, left-to-right and top-to-bottom
         :return: matplotlib axes
         """
         fig, ax = plt.subplots(figsize=figsize)
