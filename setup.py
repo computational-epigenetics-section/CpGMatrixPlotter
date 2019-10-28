@@ -7,5 +7,5 @@ setup(name="cpgPlotter",
       author_email="charles.scott@bcm.edu",
       license='MIT',
       packages=['cpgPlotter'],
-      install_requires=['numpy', 'matplotlib'],
+      install_requires=['numpy', 'matplotlib', 'pandas'],
       )
